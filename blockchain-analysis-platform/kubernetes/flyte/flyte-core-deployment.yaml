@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flyte-core
+  namespace: flyte
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flyte-core
+  template:
+    metadata:
+      labels:
+        app: flyte-core
+    spec:
+      containers:
+        - name: flyte-core
+          image: flyteorg/flytepropeller:v0.7.1  # VERY IMPORTANT: Use a specific version.
+          ports:
+            - containerPort: 8080 #Adjust to appropriate port
+          env:
+            - name: FLYTE_METADATA_SERVICE #For external tracking
+              value: "mlflow"
+            - name: FLYTE_MLFLOW_URL
+              value: "mlflow-server.mlflow:5000"

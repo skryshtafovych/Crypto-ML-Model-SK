@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlflow
+  namespace: mlflow
+spec:
+  replicas: 1 # Adjust as needed
+  selector:
+    matchLabels:
+      app: mlflow
+  template:
+    metadata:
+      labels:
+        app: mlflow
+    spec:
+      containers:
+        - name: mlflow
+          image: mlflow:latest # Consider a specific version like mlflow:2.9.2
+          ports:
+            - containerPort: 5000
+          env:
+            - name: MLFLOW_TRACKING_URI
+              value: "http://mlflow-server:5000" #Internal DNS Name from the service manifest
+            - name: MLFLOW_S3_ENDPOINT_URL #Optional S3 backend for artifacts
+              value: "http://minio.minio:9000" #Access Endpoint of your MinIO server
+            - name: AWS_ACCESS_KEY_ID  #MinIO's access credentials
+              value: "minioadmin"
+            - name: AWS_SECRET_ACCESS_KEY #MinIO's secret credentials
+              value: "minioadmin"
+          volumeMounts: #MLFlow needs access to the backend storage
+            - name: mlflow-data
+              mountPath: /data
+      volumes:
+        - name: mlflow-data #MLFlow's Volume Declaration
+          persistentVolumeClaim:
+            claimName: mlflow-pvc #Persistent Volume Claim

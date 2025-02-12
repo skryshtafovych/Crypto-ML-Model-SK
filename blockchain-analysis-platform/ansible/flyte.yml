@@ -1,0 +1,18 @@
+---
+- hosts: kubesphere_management
+  become: true
+  tasks:
+    - name: Create Flyte namespace
+      command: kubectl create namespace flyte
+      args:
+        creates: /home/{{ ansible_user }}/flyte-namespace-exists
+
+    - name: Apply Flyte core deployment
+      command: kubectl apply -f /home/{{ ansible_user }}/flyte-core-deployment.yaml  # Adjust paths
+      args:
+        chdir: /home/{{ ansible_user }}
+
+    - name: Apply Flyte core service
+      command: kubectl apply -f /home/{{ ansible_user }}/flyte-core-service.yaml  # Adjust paths
+      args:
+        chdir: /home/{{ ansible_user }}

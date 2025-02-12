@@ -1,0 +1,19 @@
+---
+- hosts: kubesphere_management # Run from the KubeSphere management node
+
+  become: true
+  tasks:
+    - name: Create Kafka namespace
+      command: kubectl create namespace kafka
+      args:
+        creates: /home/{{ ansible_user }}/kafka-namespace-exists # Idempotency
+
+    - name: Apply Kafka deployment
+      command: kubectl apply -f /home/{{ ansible_user }}/kafka-deployment.yaml
+      args:
+        chdir: /home/{{ ansible_user }}
+
+    - name: Apply Kafka service
+      command: kubectl apply -f /home/{{ ansible_user }}/kafka-service.yaml
+      args:
+        chdir: /home/{{ ansible_user }}

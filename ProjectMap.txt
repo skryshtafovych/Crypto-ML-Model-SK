@@ -1,0 +1,32 @@
+blockchain-analysis-platform/
+├── ansible/
+│   ├── common.yml
+│   ├── docker.yml
+│   ├── k3s.yml
+│   ├── kubesphere.yml
+│   ├── kafka.yml
+│   ├── postgres.yml
+│   ├── minio.yml
+│   ├── mlflow.yml
+│   ├── flyte.yml
+│   └── inventory.yml.sample  # Sample inventory file
+├── kubernetes/
+│   ├── kafka/
+│   │   ├── kafka-deployment.yaml
+│   │   └── kafka-service.yaml
+│   ├── postgres/
+│   │   ├── postgres-deployment.yaml
+│   │   ├── postgres-service.yaml
+│   │   └── postgres-pvc.yaml
+│   ├── minio/
+│   │   ├── minio-deployment.yaml
+│   │   ├── minio-service.yaml
+│   │   └── minio-pvc.yaml
+│   ├── mlflow/
+│   │   ├── mlflow-deployment.yaml
+│   │   ├── mlflow-service.yaml
+│   │   └── mlflow-pvc.yaml
+│   └── flyte/
+│       ├── flyte-core-deployment.yaml
+│       └── flyte-core-service.yaml
+├── README.md

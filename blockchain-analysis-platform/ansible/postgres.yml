@@ -1,0 +1,23 @@
+---
+- hosts: kubesphere_management
+  become: true
+  tasks:
+    - name: Create PostgreSQL namespace
+      command: kubectl create namespace postgres
+      args:
+        creates: /home/{{ ansible_user }}/postgres-namespace-exists
+
+    - name: Apply PostgreSQL deployment
+      command: kubectl apply -f /home/{{ ansible_user }}/postgres-deployment.yaml
+      args:
+        chdir: /home/{{ ansible_user }}
+
+    - name: Apply PostgreSQL service
+      command: kubectl apply -f /home/{{ ansible_user }}/postgres-service.yaml
+      args:
+        chdir: /home/{{ ansible_user }}
+
+    - name: Apply PostgreSQL persistent volume claim
+      command: kubectl apply -f /home/{{ ansible_user }}/postgres-pvc.yaml
+      args:
+        chdir: /home/{{ ansible_user }}

@@ -1,0 +1,44 @@
+---
+- hosts: kubesphere_management  # Run only on the KubeSphere management node
+  become: true
+  tasks:
+    - name: Copy kubeconfig file
+      copy:
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: /home/{{ ansible_user }}/.kube/config
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: 0600
+      delegate_to: k8s_worker_1
+      run_once: true
+
+    - name: modify kubeconfig to use the worker IP
+      replace:
+        path: /home/{{ ansible_user }}/.kube/config
+        regexp: server: https://127.0.0.1:6443
+        replace: server: https://{{ hostvars['k8s_worker_1']['ansible_host'] }}:6443
+
+    - name: Install KubeSphere prerequisites
+      apt:
+        name:
+          - nfs-common
+        state: present
+
+    - name: Install KubeSphere
+      shell: |
+        curl -L -o kubesphere.yaml https://github.com/kubesphere/ks-installer/releases/download/v3.4.0/kubesphere-installer.yaml
+        curl -L -o cluster-configuration.yaml https://github.com/kubesphere/ks-installer/releases/download/v3.4.0/sample/cluster-configuration.yaml
+        kubectl apply -f kubesphere.yaml
+      args:
+        chdir: /home/{{ ansible_user }}
+        creates: /home/{{ ansible_user }}/kubesphere.yaml  # Check if it already exists
+
+    - name: Check KubeSphere installation status
+      shell: |
+        kubectl get pod -n kubesphere-system
+      register: ks_status
+      until: "'ks-console' in ks_status.stdout"
+      retries: 10
+      delay: 30
+      args:
+        chdir: /home/{{ ansible_user }}

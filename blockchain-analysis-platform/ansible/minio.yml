@@ -1,0 +1,23 @@
+---
+- hosts: kubesphere_management
+  become: true
+  tasks:
+    - name: Create MinIO namespace
+      command: kubectl create namespace minio
+      args:
+        creates: /home/{{ ansible_user }}/minio-namespace-exists
+
+    - name: Apply MinIO deployment
+      command: kubectl apply -f /home/{{ ansible_user }}/minio-deployment.yaml
+      args:
+        chdir: /home/{{ ansible_user }}
+
+    - name: Apply MinIO service
+      command: kubectl apply -f /home/{{ ansible_user }}/minio-service.yaml
+      args:
+        chdir: /home/{{ ansible_user }}
+
+    - name: Apply MinIO persistent volume claim
+      command: kubectl apply -f /home/{{ ansible_user }}/minio-pvc.yaml
+      args:
+        chdir: /home/{{ ansible_user }}

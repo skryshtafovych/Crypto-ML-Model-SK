@@ -1,0 +1,18 @@
+---
+- hosts: kubesphere_management
+  become: true
+  tasks:
+    - name: Create MLflow namespace
+      command: kubectl create namespace mlflow
+      args:
+        creates: /home/{{ ansible_user }}/mlflow-namespace-exists
+
+    - name: Apply MLflow deployment
+      command: kubectl apply -f /home/{{ ansible_user }}/mlflow-deployment.yaml
+      args:
+        chdir: /home/{{ ansible_user }}
+
+    - name: Apply MLflow service
+      command: kubectl apply -f /home/{{ ansible_user }}/mlflow-service.yaml
+      args:
+        chdir: /home/{{ ansible_user }}

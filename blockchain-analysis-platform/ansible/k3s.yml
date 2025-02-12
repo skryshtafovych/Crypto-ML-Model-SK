@@ -1,0 +1,33 @@
+---
+- hosts: k8s_worker_1,k8s_worker_2  # Run only on Kubernetes worker nodes
+  become: true
+  tasks:
+    - name: Install K3s
+      shell: |
+        curl -sfL https://get.k3s.io | sh -s server --token=YOUR_K3S_TOKEN
+      args:
+        creates: /usr/local/bin/kubectl  # Check if K3s is already installed
+
+    - name: create kubectl symlink
+      file:
+        src: /usr/local/bin/kubectl
+        dest: /usr/bin/kubectl
+        state: link
+
+    - name: create crictl symlink
+      file:
+        src: /usr/local/bin/crictl
+        dest: /usr/bin/crictl
+        state: link
+
+    - name: create k3s-killall.sh symlink
+      file:
+        src: /usr/local/bin/k3s-killall.sh
+        dest: /usr/bin/k3s-killall.sh
+        state: link
+
+    - name: create k3s-uninstall.sh symlink
+      file:
+        src: /usr/local/bin/k3s-uninstall.sh
+        dest: /usr/bin/k3s-uninstall.sh
+        state: link
