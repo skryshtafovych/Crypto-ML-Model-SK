@@ -1,18 +1,22 @@
 apiVersion: v1
-clusters:
-- cluster:
-    server: 192.168.1.170
-  name: coin-beta
-contexts:
-- context:
-    cluster: coin-beta
-    user: stepan
-  name: coin-beta
-current-context: coin-beta
 kind: Config
 preferences: {}
+
+clusters:
+- cluster:
+    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCi... # Base64 encoded CA certificate
+    server: https://your-kubernetes-api-server:6443 # **REPLACE** with API server address
+  name: coin-beta # **REPLACE**
+
+contexts:
+- context:
+    cluster: coin-beta # **REPLACE** Must match cluster name above
+    user: stepan # **REPLACE** Must match user name below
+  name: coin-beta # **REPLACE**
+
+current-context: coin-beta # **REPLACE** One of the context name
+
 users:
-- name: stepan
+- name: stepan # **REPLACE**
   user:
-    token: sksk
-    
+    token: sksk # **REPLACE** Or use client-certificate/client-key
